@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tradeai.supplyservice.datamodel.Supply;
 import com.tradeai.supplyservice.dto.SupplyDTO;
 import com.tradeai.supplyservice.request.SupplyPositionRequest;
 import com.tradeai.supplyservice.response.SupplyPositionResponse;
@@ -98,13 +97,13 @@ public class SupplyController {
 	
 	
 
-	@PostMapping(path = "/{supplierId}/account/{accountId}/date/{processingDate}", consumes = {
+	@PostMapping(path = "/{supplierId}/date/{processingDate}", consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 
-	public ResponseEntity<SupplyPositionResponse> createSupplyPositions(
+	public ResponseEntity<SupplyPositionResponse> createSupplyPosition(
 			@Valid @RequestBody SupplyPositionRequest supplyPosReq, @PathVariable("supplierId") String supplierId,
-			@PathVariable("accountId") String accountId, @PathVariable("processingDate") String processingDate)
+			@PathVariable("processingDate") String processingDate)
 			throws ParseException {
 
 		SupplyDTO dto = new SupplyDTO();
@@ -113,7 +112,7 @@ public class SupplyController {
 		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
 
 		dto.setSupplierId(supplierId);
-		dto.setSupplyId(service.getMaxSupplyId() + 1);
+		//dto.setSupplyId(service.getMaxSupplyId() + 1);
 		dto.setSupplyGroupId(0);
 		dto.setSecurityCode(supplyPosReq.getSecurityId());
 		dto.setQuantity(Integer.parseInt(supplyPosReq.getQuantity()));
@@ -127,5 +126,21 @@ public class SupplyController {
 		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 
 	}
+	
+	
+	@PostMapping(path = "/{supplierId}/date/{processingDate}/batch", consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+					MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+
+	public ResponseEntity<List<SupplyPositionResponse>> createSupplyPositions(
+			@Valid @RequestBody List<SupplyPositionRequest> supplyPosReqList, @PathVariable("supplierId") String supplierId,
+			@PathVariable("processingDate") String processingDate)
+			throws ParseException {
+
+			//TODO - implement the list method with streams 
+
+			return null;
+	}
+
 
 }
