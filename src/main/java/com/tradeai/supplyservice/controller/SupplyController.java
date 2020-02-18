@@ -99,7 +99,7 @@ public class SupplyController {
 
 	@PostMapping(path = "/{supplierId}/date/{processingDate}", consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
-					MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 
 	public ResponseEntity<SupplyPositionResponse> createSupplyPosition(
 			@Valid @RequestBody SupplyPositionRequest supplyPosReq, @PathVariable("supplierId") String supplierId,
@@ -130,7 +130,7 @@ public class SupplyController {
 	
 	@PostMapping(path = "/{supplierId}/date/{processingDate}/batch", consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
-					MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+					 MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, })
 
 	public ResponseEntity<List<SupplyPositionResponse>> createSupplyPositions(
 			@Valid @RequestBody List<SupplyPositionRequest> supplyPosReqList, @PathVariable("supplierId") String supplierId,
