@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -18,14 +19,15 @@ import lombok.Setter;
 @Entity
 @Table (name ="supply" , schema = "supply")
 
-
+@IdClass(SupplyId.class)
 public class Supply {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	///@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="supply_id")
 	private Integer supplyId;
 	
+	@Id
 	@Column(name="supply_group_id")
 	private Integer supplyGroupId;
 	

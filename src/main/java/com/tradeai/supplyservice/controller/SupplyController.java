@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tradeai.supplyservice.dto.SupplyDTO;
+import com.tradeai.supplyservice.request.SupplyPosition;
 import com.tradeai.supplyservice.request.SupplyPositionRequest;
+import com.tradeai.supplyservice.request.SupplyPositionsRequest;
 import com.tradeai.supplyservice.response.SupplyPositionResponse;
 import com.tradeai.supplyservice.service.SupplyService;
 
@@ -97,13 +99,12 @@ public class SupplyController {
 	
 	
 
-	@PostMapping(path = "/{supplierId}/date/{processingDate}", consumes = {
+	@PostMapping(consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 
 	public ResponseEntity<SupplyPositionResponse> createSupplyPosition(
-			@Valid @RequestBody SupplyPositionRequest supplyPosReq, @PathVariable("supplierId") String supplierId,
-			@PathVariable("processingDate") String processingDate)
+			@Valid @RequestBody SupplyPositionRequest supplyPosReq )
 			throws ParseException {
 
 		SupplyDTO dto = new SupplyDTO();
@@ -111,13 +112,13 @@ public class SupplyController {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
 
-		dto.setSupplierId(supplierId);
-		//dto.setSupplyId(service.getMaxSupplyId() + 1);
+		dto.setSupplierId(supplyPosReq.getSupplierId());
+		dto.setSupplyId(service.getMaxSupplyId() + 1);
 		dto.setSupplyGroupId(0);
 		dto.setSecurityCode(supplyPosReq.getSecurityId());
 		dto.setQuantity(Integer.parseInt(supplyPosReq.getQuantity()));
 
-		dto.setSupplyDate(format.parse(processingDate));
+		dto.setSupplyDate(format.parse(supplyPosReq.getDateOfSupply()));
 
 		SupplyDTO returnedDto = service.setSupplyForSupplierAccountAndDate(dto);
 
@@ -128,19 +129,56 @@ public class SupplyController {
 	}
 	
 	
-	@PostMapping(path = "/{supplierId}/date/{processingDate}/batch", consumes = {
+	
+	@PostMapping(path = "/batch", consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
-					 MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE, })
+					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 
 	public ResponseEntity<List<SupplyPositionResponse>> createSupplyPositions(
-			@Valid @RequestBody List<SupplyPositionRequest> supplyPosReqList, @PathVariable("supplierId") String supplierId,
-			@PathVariable("processingDate") String processingDate)
+			@Valid @RequestBody SupplyPositionsRequest supplyPosReq )
 			throws ParseException {
 
-			//TODO - implement the list method with streams 
+		List<SupplyDTO> list = new ArrayList<>();
 
-			return null;
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+		
+		List<SupplyPosition> supplyPositions = supplyPosReq.getPositions();
+		
+		Integer supplyId = service.getMaxSupplyId() + 1;
+		
+		Integer supplyGroupId = 0;
+		
+		for (SupplyPosition postion : supplyPositions) {
+			
+			SupplyDTO dto = new SupplyDTO();
+			dto.setSupplierId(supplyPosReq.getSupplierId());
+			dto.setSupplyId(supplyId);
+			dto.setSupplyGroupId(supplyGroupId++ );
+			dto.setSecurityCode(postion.getSecurityId());
+			dto.setQuantity(Integer.parseInt(postion.getQuantity()));
+			dto.setSupplyDate(format.parse(supplyPosReq.getDateOfSupply()));
+			list.add(dto);
+			
+		}
+
+
+
+		List<SupplyDTO> returnedDtos = service.setSuppliesForSupplierAndDate(list);
+
+		List<SupplyPositionResponse> responseList = convertListDTOToResponse(returnedDtos);
+
+		return new ResponseEntity<List<SupplyPositionResponse>>(responseList, HttpStatus.OK);
+		
+
+
+
 	}
+	
+	
+
+
 
 
 }

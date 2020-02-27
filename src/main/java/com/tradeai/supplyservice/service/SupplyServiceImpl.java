@@ -56,8 +56,15 @@ public class SupplyServiceImpl implements SupplyService {
 
 	@Override
 	public Integer getMaxSupplyId() {
+		
+		Integer maxSupplyId = repository.getMaxSupplyId();
+		
+		/// new table 
+		if (maxSupplyId == null) {
+			maxSupplyId = 0;
+		}
 
-		return repository.getMaxSupplyId();
+		return maxSupplyId;
 	}
 
 	@Override
@@ -76,6 +83,25 @@ public class SupplyServiceImpl implements SupplyService {
 
 		return mapper.map(supply, SupplyDTO.class);
 
+	}
+
+	@Override
+	public List<SupplyDTO> setSuppliesForSupplierAndDate(List<SupplyDTO> list) {
+
+
+		List<Supply> supplies = new ArrayList<>();
+		ModelMapper mapper = new ModelMapper();
+		
+		for (SupplyDTO supplydto: list ) {
+			
+			Supply supply = mapper.map(supplydto, Supply.class);
+			supplies.add(supply);
+			
+		}
+		
+		Iterable<Supply> suppliesIterable =  repository.saveAll(supplies);
+		
+		return list;
 	}
 
 }

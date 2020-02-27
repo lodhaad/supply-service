@@ -17,6 +17,8 @@ public interface SupplyService {
 
 	public SupplyDTO setSupplyForSupplierAccountAndDate(SupplyDTO supplydto);
 	
+	public List<SupplyDTO> setSuppliesForSupplierAndDate(List<SupplyDTO> list);
+	
 
 
 
