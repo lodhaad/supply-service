@@ -38,7 +38,9 @@ public class SupplyController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	@GetMapping("/test")
+	@GetMapping(path="/test", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
 	public String test() {
 		return "test";
 	}
@@ -47,7 +49,7 @@ public class SupplyController {
 			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
 					MediaType.APPLICATION_XML_VALUE })
 
-	public ResponseEntity<List<SupplyPositionResponse>> getSupplyPositionOnSupplierAndProcessingDate(
+	public ResponseEntity<SupplyPositionResponse> getSupplyPositionOnSupplierAndProcessingDate(
 			@PathVariable("supplierId") String supplierId, @PathVariable("processingDate") String processingDate)
 			throws ParseException {
 
@@ -56,24 +58,34 @@ public class SupplyController {
 
 		List<SupplyDTO> supplyDTOs = service.getAllSuppliesForSupplierForDate(supplierId, format.parse(processingDate));
 
-		List<SupplyPositionResponse> responseList = convertListDTOToResponse(supplyDTOs);
+		SupplyPositionResponse responseList = convertListDTOToResponse(supplyDTOs);
 
-		return new ResponseEntity<List<SupplyPositionResponse>>(responseList, HttpStatus.OK);
+		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 
 	}
 
-	private List<SupplyPositionResponse> convertListDTOToResponse(List<SupplyDTO> dto) {
+	private SupplyPositionResponse convertListDTOToResponse(List<SupplyDTO> dto) {
 
-		List<SupplyPositionResponse> response = new ArrayList<SupplyPositionResponse>();
+		///List<SupplyPositionResponse> response = new ArrayList<SupplyPositionResponse>();
+		
+		SupplyPositionResponse positionResponse = new SupplyPositionResponse();
+		positionResponse.setSupplies(new ArrayList<>());
 
 		dto.forEach(arg0 -> {
 
-			SupplyPositionResponse positionResponse = convertToDto(arg0);
-			response.add(positionResponse);
+			positionResponse.setSupplierId(arg0.getSupplierId());
+			positionResponse.setSupplyDate(arg0.getSupplyDate());
+			SupplyPosition position = new SupplyPosition();
+			position.setSecurityId(arg0.getSecurityCode());
+			position.setQuantity(arg0.getQuantity().toString());
+			positionResponse.getSupplies().add(position);
+			//
 
 		});
+		
+		//response.add(positionResponse);
 
-		return response;
+		return positionResponse;
 
 	}
 
@@ -134,7 +146,7 @@ public class SupplyController {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 
-	public ResponseEntity<List<SupplyPositionResponse>> createSupplyPositions(
+	public ResponseEntity<SupplyPositionResponse> createSupplyPositions(
 			@Valid @RequestBody SupplyPositionsRequest supplyPosReq )
 			throws ParseException {
 
@@ -167,9 +179,9 @@ public class SupplyController {
 
 		List<SupplyDTO> returnedDtos = service.setSuppliesForSupplierAndDate(list);
 
-		List<SupplyPositionResponse> responseList = convertListDTOToResponse(returnedDtos);
+		SupplyPositionResponse responseList = convertListDTOToResponse(returnedDtos);
 
-		return new ResponseEntity<List<SupplyPositionResponse>>(responseList, HttpStatus.OK);
+		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 		
 
 
