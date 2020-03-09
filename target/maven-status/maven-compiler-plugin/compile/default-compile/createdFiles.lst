@@ -1,5 +1,7 @@
 com\tradeai\supplyservice\request\SupplyPositionsRequest.class
 com\tradeai\supplyservice\dto\SupplyDTO.class
+com\tradeai\supplyservice\exception\AppExceptionHandler.class
+com\tradeai\supplyservice\exception\ErrorMessage.class
 com\tradeai\supplyservice\datamodel\SupplyId.class
 com\tradeai\supplyservice\SupplyServiceApplication.class
 com\tradeai\supplyservice\service\SupplyService.class

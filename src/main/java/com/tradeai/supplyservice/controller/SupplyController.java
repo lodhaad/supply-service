@@ -38,36 +38,24 @@ public class SupplyController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	@GetMapping(path="/test", consumes = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
-					MediaType.APPLICATION_XML_VALUE })
-	public String test() {
-		return "test";
-	}
-
-	@GetMapping(path = "/{supplierId}/date/{processingDate}", consumes = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
-					MediaType.APPLICATION_XML_VALUE })
-
-	public ResponseEntity<SupplyPositionResponse> getSupplyPositionOnSupplierAndProcessingDate(
-			@PathVariable("supplierId") String supplierId, @PathVariable("processingDate") String processingDate)
-			throws ParseException {
-
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-
-		List<SupplyDTO> supplyDTOs = service.getAllSuppliesForSupplierForDate(supplierId, format.parse(processingDate));
+	@GetMapping(path="/{supplierId}/date/{processingDate}")
+	public ResponseEntity<SupplyPositionResponse> test(@PathVariable("supplierId") String supplierId, @PathVariable("processingDate") String processingDate) {
+		
+		
+		List<SupplyDTO> supplyDTOs = service.getAllSuppliesForSupplierForDate(supplierId, processingDate);
 
 		SupplyPositionResponse responseList = convertListDTOToResponse(supplyDTOs);
 
 		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 
+
 	}
+
+
 
 	private SupplyPositionResponse convertListDTOToResponse(List<SupplyDTO> dto) {
 
-		///List<SupplyPositionResponse> response = new ArrayList<SupplyPositionResponse>();
-		
+
 		SupplyPositionResponse positionResponse = new SupplyPositionResponse();
 		positionResponse.setSupplies(new ArrayList<>());
 
@@ -79,11 +67,12 @@ public class SupplyController {
 			position.setSecurityId(arg0.getSecurityCode());
 			position.setQuantity(arg0.getQuantity().toString());
 			positionResponse.getSupplies().add(position);
-			//
+			
 
 		});
 		
-		//response.add(positionResponse);
+
+
 
 		return positionResponse;
 
@@ -111,9 +100,7 @@ public class SupplyController {
 	
 	
 
-	@PostMapping(consumes = {
-			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
-					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@PostMapping
 
 	public ResponseEntity<SupplyPositionResponse> createSupplyPosition(
 			@Valid @RequestBody SupplyPositionRequest supplyPosReq )
@@ -142,9 +129,7 @@ public class SupplyController {
 	
 	
 	
-	@PostMapping(path = "/batch", consumes = {
-			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
-					 MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@PostMapping(path = "/batch")
 
 	public ResponseEntity<SupplyPositionResponse> createSupplyPositions(
 			@Valid @RequestBody SupplyPositionsRequest supplyPosReq )

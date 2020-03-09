@@ -1,8 +1,11 @@
 package com.tradeai.supplyservice.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,22 @@ public class SupplyServiceImpl implements SupplyService {
 	private ModelMapper modelMapper;
 
 	@Override
-	public List<SupplyDTO> getAllSuppliesForSupplierForDate(String supplierId, Date date) {
+	public List<SupplyDTO> getAllSuppliesForSupplierForDate(String supplierId, String stringDate) {
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+		
+		Date date = null ;
+		try {
+			date = format.parse(stringDate);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		if (date == null) {
+			return null;
+		}
 
 		java.sql.Date sqlDate = new java.sql.Date(date.getTime());
 
