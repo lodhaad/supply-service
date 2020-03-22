@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tradeai.supplyservice.dto.SupplyDTO;
+import com.tradeai.supplyservice.helper.SupplyServiceHeper;
 import com.tradeai.supplyservice.request.SupplyPosition;
 import com.tradeai.supplyservice.request.SupplyPositionRequest;
 import com.tradeai.supplyservice.request.SupplyPositionsRequest;
@@ -38,13 +39,28 @@ public class SupplyController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private SupplyServiceHeper helper;
+	
+	
+	@GetMapping(path="/hello")
+	public String  hello() {
+		
+			return "hello world";
+
+
+	}
+	
+	
+	
+	
 	@GetMapping(path="/{supplierId}/date/{processingDate}")
 	public ResponseEntity<SupplyPositionResponse> test(@PathVariable("supplierId") String supplierId, @PathVariable("processingDate") String processingDate) {
 		
 		
 		List<SupplyDTO> supplyDTOs = service.getAllSuppliesForSupplierForDate(supplierId, processingDate);
 
-		SupplyPositionResponse responseList = convertListDTOToResponse(supplyDTOs);
+		SupplyPositionResponse responseList = helper.convertListDTOToResponse(supplyDTOs);
 
 		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 
@@ -53,39 +69,10 @@ public class SupplyController {
 
 
 
-	private SupplyPositionResponse convertListDTOToResponse(List<SupplyDTO> dto) {
+	
 
-
-		SupplyPositionResponse positionResponse = new SupplyPositionResponse();
-		positionResponse.setSupplies(new ArrayList<>());
-
-		dto.forEach(arg0 -> {
-
-			positionResponse.setSupplierId(arg0.getSupplierId());
-			positionResponse.setSupplyDate(arg0.getSupplyDate());
-			SupplyPosition position = new SupplyPosition();
-			position.setSecurityId(arg0.getSecurityCode());
-			position.setQuantity(arg0.getQuantity().toString());
-			positionResponse.getSupplies().add(position);
-			
-
-		});
-		
-
-
-
-		return positionResponse;
-
-	}
-
-	private SupplyPositionResponse convertToDto(SupplyDTO post) {
-
-		SupplyPositionResponse postDto = modelMapper.map(post, SupplyPositionResponse.class);
-
-		return postDto;
-	}
-
-	@GetMapping(path = "/{supplierId}/account/{accountId}/date/{processingDate}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{supplierId}/account/{accountId}/date/{processingDate}", 
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<SupplyPositionResponse> getSupplyPositionOnProcessingDateAndAccount(
 			@PathVariable("supplierId") String supplierId, @PathVariable("processingDate") String processingDate,
@@ -100,7 +87,7 @@ public class SupplyController {
 	
 	
 
-	@PostMapping
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<SupplyPositionResponse> createSupplyPosition(
 			@Valid @RequestBody SupplyPositionRequest supplyPosReq )
@@ -121,7 +108,7 @@ public class SupplyController {
 
 		SupplyDTO returnedDto = service.setSupplyForSupplierAccountAndDate(dto);
 
-		SupplyPositionResponse responseList = convertToDto(returnedDto);
+		SupplyPositionResponse responseList = helper.convertToDto(returnedDto);
 
 		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 
@@ -164,7 +151,7 @@ public class SupplyController {
 
 		List<SupplyDTO> returnedDtos = service.setSuppliesForSupplierAndDate(list);
 
-		SupplyPositionResponse responseList = convertListDTOToResponse(returnedDtos);
+		SupplyPositionResponse responseList = helper.convertListDTOToResponse(returnedDtos);
 
 		return new ResponseEntity<SupplyPositionResponse>(responseList, HttpStatus.OK);
 		
