@@ -23,7 +23,6 @@ import lombok.Setter;
 public class Supply {
 	
 	@Id
-	///@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="supply_id")
 	private Integer supplyId;
 	
