@@ -84,6 +84,19 @@ public class SupplyServiceImpl implements SupplyService {
 
 		return maxSupplyId;
 	}
+	
+	@Override
+	public Integer getMaxSupplyBatchId() {
+		
+		Integer maxSupplyBatchId = repository.getMaxSupplyBatchId();
+		
+		/// new table 
+		if (maxSupplyBatchId == null) {
+			maxSupplyBatchId = 0;
+		}
+
+		return maxSupplyBatchId;
+	}
 
 	@Override
 	public Integer getMaxSupplyGroupIDForSupplyId() {
@@ -120,6 +133,32 @@ public class SupplyServiceImpl implements SupplyService {
 		Iterable<Supply> suppliesIterable =  repository.saveAll(supplies);
 		
 		return list;
+	}
+
+	@Override
+	public List<SupplyDTO> getSupplyForSecurityAndBusinessDate(String secId, String processingDate) {
+
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+		
+		Date date = null ;
+		try {
+			date = format.parse(processingDate);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		if (date == null) {
+			return null;
+		}
+
+		java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+		List<Supply> supplies = repository.findBySecurityCodeAndSupplyDate(secId, sqlDate);
+
+		return convertToDTO(supplies);
 	}
 
 }

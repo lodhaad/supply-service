@@ -1,30 +1,41 @@
 package com.tradeai.supplyservice.helper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 
 import com.tradeai.supplyservice.dto.SupplyDTO;
-import com.tradeai.supplyservice.request.SupplyPosition;
+
+
 import com.tradeai.supplyservice.response.SupplyPositionResponse;
 
 public class SupplyServiceHeper {
 	
-	public  SupplyPositionResponse convertListDTOToResponse(List<SupplyDTO> dto) {
+	public  List<SupplyPositionResponse> convertListDTOToResponse(List<SupplyDTO> dto) {
 
 
-		SupplyPositionResponse positionResponse = new SupplyPositionResponse();
-		positionResponse.setSupplies(new ArrayList<>());
+		List<SupplyPositionResponse> response = new ArrayList<>();
+		
+		
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-		dto.forEach(arg0 -> {
 
-			positionResponse.setSupplierId(arg0.getSupplierId());
-			positionResponse.setSupplyDate(arg0.getSupplyDate());
-			SupplyPosition position = new SupplyPosition();
-			position.setSecurityId(arg0.getSecurityCode());
-			position.setQuantity(arg0.getQuantity().toString());
-			positionResponse.getSupplies().add(position);
+		dto.forEach(element  -> {
+			
+			SupplyPositionResponse positionResponse = new SupplyPositionResponse();
+
+			positionResponse.setSupplierId(element.getSupplierId());
+			positionResponse.setSupplyDate(dateFormat.format(element.getSupplyDate()));
+			positionResponse.setSupplyGroupId(element.getSupplyGroupId());
+			positionResponse.setSecurityCode(element.getSecurityCode());
+			positionResponse.setQuantity(element.getQuantity());
+			positionResponse.setSupplyId(element.getSupplyId());
+			positionResponse.setRate(element.getRate());
+
+			response.add(positionResponse);
 			
 
 		});
@@ -32,7 +43,7 @@ public class SupplyServiceHeper {
 
 
 
-		return positionResponse;
+		return response;
 
 	}
 

@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.tradeai.supplyservice.request.SupplyPosition;
+
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,28 +13,21 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class SupplyPositionResponse implements Serializable {
+public class SupplyPositionResponse  {
 	
-	//private Integer supplyId;
 
-	//private Integer supplyGroupId;
+	private Integer supplyId;
+
+	private Integer supplyGroupId;
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private String supplierId;
 	
-	private Date supplyDate;
+	private String supplyDate;
 	
+	private String securityCode;
 	
-	private List<SupplyPosition> supplies;
+	private Integer quantity;
 	
-	//private String securityCode;
-	
-	//private Integer quantity;
-	
-	//private Double rate;
+	private Double rate;
 
 }

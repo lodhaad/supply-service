@@ -16,5 +16,11 @@ public interface SupplyRepository extends CrudRepository<Supply, Integer> {
 	
 	@Query("select max(supplyId) from Supply")
 	public Integer getMaxSupplyId();
+	
+	@Query("select max(supplyGroupId) from Supply")
+	public Integer getMaxSupplyBatchId();
+	
+	
+	public List<Supply> findBySecurityCodeAndSupplyDate(String secCode, Date supplyDate);
 
 }

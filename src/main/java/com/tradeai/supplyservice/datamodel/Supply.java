@@ -19,14 +19,14 @@ import lombok.Setter;
 @Entity
 @Table (name ="supply" , schema = "supply")
 
-@IdClass(SupplyId.class)
+//@IdClass(SupplyId.class)
 public class Supply {
 	
 	@Id
+
 	@Column(name="supply_id")
 	private Integer supplyId;
-	
-	@Id
+		
 	@Column(name="supply_group_id")
 	private Integer supplyGroupId;
 	
