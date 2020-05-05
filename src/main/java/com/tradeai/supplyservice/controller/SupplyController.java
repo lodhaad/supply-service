@@ -59,6 +59,10 @@ public class SupplyController {
 		return new ResponseEntity<List<SupplyPositionResponse>>(responseList, HttpStatus.OK);
 
 	}
+	
+	////introduce a new method that gets by supply if 
+	
+	/// end of method 
 
 	@GetMapping(path = "/{supplierId}/date/{processingDate}")
 	public ResponseEntity<List<SupplyPositionResponse>> test(@PathVariable("supplierId") String supplierId,
